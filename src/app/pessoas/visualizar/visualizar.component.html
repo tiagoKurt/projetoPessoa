@@ -1,0 +1,47 @@
+<div class="centered-container">
+  <div class="flex-column gap-2">
+    <p-floatLabel>
+      <input pInputText id="nome" [(ngModel)]="pessoa.nome" />
+      <label for="nome">Nome</label>
+    </p-floatLabel>
+
+    <p-floatLabel>
+      <p-inputMask
+        mask="999.999.999-99"
+        [(ngModel)]="pessoa.cpf"
+        id="cpf_input"
+      />
+      <label for="cpf_input">CPF</label>
+    </p-floatLabel>
+
+    <p-floatLabel>
+      <input pInputText id="email" [(ngModel)]="pessoa.email" />
+      <label for="email">Email</label>
+    </p-floatLabel>
+
+    <p-floatLabel>
+      <p-inputMask
+        mask="(99)9 9999-9999"
+        [(ngModel)]="pessoa.telefone"
+        id="telefone_input"
+      />
+      <label for="telefone_input">Telefone</label>
+    </p-floatLabel>
+
+    <div class="btn-container">
+      <p-toast></p-toast>
+      <p-button
+        label="Voltar"
+        [raised]="true"
+        severity="info"
+        [routerLink]="['/']"
+      ></p-button>
+      <p-button
+        label="Alterar"
+        [raised]="true"
+        severity="success"
+        (click)="alterarPessoa()"
+      ></p-button>
+    </div>
+  </div>
+</div>

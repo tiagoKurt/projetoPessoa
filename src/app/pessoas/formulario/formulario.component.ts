@@ -6,11 +6,13 @@ import { MenubarModule } from 'primeng/menubar';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
-import { FormularioServiceService } from './formulario.service.service';
+
 import { IPessoa } from './formulario.types';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { InputMaskModule } from 'primeng/inputmask';
 import { MessageService } from 'primeng/api';
+import { of, switchMap, take } from 'rxjs';
+import { FormularioService } from './formulario.service.service';
 
 interface Sexo {
   sexo: string;
@@ -35,10 +37,6 @@ interface Sexo {
   styleUrl: './formulario.component.scss'
 })
 export class FormularioComponent implements OnInit {
-  sexos: Sexo[] = [
-    { sexo: 'Masculino' },
-    { sexo: 'Feminino' }
-  ];
 
   formDesabilitado = false;
 
@@ -47,7 +45,7 @@ export class FormularioComponent implements OnInit {
   pessoa: IPessoa = { id: null, nome: '', cpf: '', email: '', telefone: '' }
 
   constructor(
-    private formularioService: FormularioServiceService,
+    private formularioService: FormularioService,
     private route: ActivatedRoute,
     private messageService: MessageService
   ) {}
@@ -55,28 +53,43 @@ export class FormularioComponent implements OnInit {
   ngOnInit() {
     const cpf = this.route.snapshot.paramMap.get('cpf');
     if (cpf) {
-      // this.pessoa = this.formularioService.obterPessoaPorCpf(cpf);
+
       this.formDesabilitado = true;
     }
   }
 
   cadastrar(): void {
-
-    this.formularioService.criarPessoa(this.pessoa).subscribe(
-      (resposta) => {
-        this.messageService.add({ severity: 'success', summary: 'Concluido!', detail: 'Usuario: '+ this.pessoa.nome+', foi cadatrada com sucesso!' });
-        this.pessoa = { id: null, nome: '', cpf: '', email: '', telefone: '' };
-
-      }, error => {
-        console.log(this.pessoa.nome)
-        this.messageService.add({ severity: 'error', summary: 'Erro!', detail: 'Falha ao cadastrar o usuário.' });
-      });
-  }
-
-  validateAgeInput(event: KeyboardEvent) {
-    const input = event.target as HTMLInputElement;
-    if (input.value.length >= 2 && event.key !== 'Backspace') {
-      event.preventDefault();
+    if (!this.pessoa.nome || !this.pessoa.email || !this.pessoa.cpf || !this.pessoa.telefone) {
+      this.messageService.add({ severity: 'warn', summary: 'Atenção!', detail: 'Todos os campos são obrigatórios.' });
+      return;
     }
+
+    this.formularioService.getPessoas().pipe(
+      take(1),
+      switchMap((pessoas) => {
+        const usuarioExistente = pessoas.find(p => p.nome.toLowerCase() === this.pessoa.nome.toLowerCase());
+
+        if (usuarioExistente && usuarioExistente.id !== this.pessoa.id) {
+          this.messageService.add({ severity: 'error', summary: 'Erro!', detail: 'Já existe um usuário com esse nome.' });
+
+          return of(null);
+        }
+
+        return this.formularioService.salvarPessoa(this.pessoa);
+      })
+    ).subscribe(
+      (resposta) => {
+        if (resposta) {
+          this.messageService.add({ severity: 'success', summary: 'Concluído!', detail: 'Usuário: ' + this.pessoa.nome + ', foi cadastrado com sucesso!' });
+          this.pessoa = { id: null, nome: '', cpf: '', email: '', telefone: '' };
+        }
+      },
+      (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Erro!', detail: 'Falha ao cadastrar o usuário.' });
+      }
+    );
   }
+
+
+
 }

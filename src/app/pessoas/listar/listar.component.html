@@ -4,7 +4,7 @@
 
 <div class="centered-container">
   <div class="card table-container">
-
+    <p-toast />
     <p-table [value]="pessoas" [tableStyle]="{ 'min-width': '40rem' }" [scrollable]="true" scrollHeight="380px">
       <ng-template pTemplate="header">
         <tr>
@@ -12,6 +12,7 @@
           <th>CPF</th>
           <th>Email</th>
           <th>Telefone</th>
+          <th>Ações</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-pessoa>
@@ -21,8 +22,9 @@
           <td>{{ pessoa.email }}</td>
           <td>{{ pessoa.telefone }}</td>
           <td>
-            <p-toast />
-            <p-button icon="pi pi-pi-pencil" [rounded]="true" [routerLink]="['/editar',pessoa.id]"></p-button>
+
+            <p-button icon="pi pi-pencil" [rounded]="true" [routerLink]="['/editar',pessoa.id]"></p-button>
+            <p-button icon="pi pi-trash" [rounded]="true" (click)="excluirPessoa(pessoa.id)"></p-button>
           </td>
         </tr>
       </ng-template>
