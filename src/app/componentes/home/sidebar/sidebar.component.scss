@@ -1,0 +1,21 @@
+.itemsSidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+h3 {
+  margin-bottom: 1rem;
+}
+
+p-button {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+li {
+  margin-bottom: 1rem;
+}
+
+::ng-deep .p-menubar {
+  background-color: var(--primary-color);
+}

@@ -8,9 +8,11 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
-import { IPessoa } from '../formulario/formulario.types';
+import { IPessoa } from '../../../types/pessoa.types';
 import { of, switchMap, take } from 'rxjs';
-import { FormularioService } from '../formulario/formulario.service.service';
+import { FormularioService } from '../../../services/formulario.service';
+import { CommonModule } from '@angular/common';
+import { SidebarComponent } from "../../home/sidebar/sidebar.component";
 interface Sexo {
   sexo: string;
 }
@@ -27,7 +29,9 @@ interface Sexo {
     InputMaskModule,
     RouterModule,
     ToastModule,
-  ],
+    CommonModule,
+    SidebarComponent
+],
   providers: [MessageService],
   templateUrl: './visualizar.component.html',
   styleUrl: './visualizar.component.scss',

@@ -7,12 +7,14 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 
-import { IPessoa } from './formulario.types';
+import { IPessoa } from '../../../types/pessoa.types';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { InputMaskModule } from 'primeng/inputmask';
 import { MessageService } from 'primeng/api';
 import { of, switchMap, take } from 'rxjs';
-import { FormularioService } from './formulario.service.service';
+import { FormularioService } from '../../../services/formulario.service';
+import { CommonModule } from '@angular/common';
+import { SidebarComponent } from "../../home/sidebar/sidebar.component";
 
 interface Sexo {
   sexo: string;
@@ -30,8 +32,10 @@ interface Sexo {
     ButtonModule,
     DropdownModule,
     InputMaskModule,
-    RouterModule
-  ],
+    RouterModule,
+    CommonModule,
+    SidebarComponent
+],
   providers: [MessageService],
   templateUrl: './formulario.component.html',
   styleUrl: './formulario.component.scss'

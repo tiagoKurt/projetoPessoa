@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IPessoa } from './formulario.types';
+import { IPessoa } from '../types/pessoa.types';
 import { catchError, Observable, switchMap, take, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 

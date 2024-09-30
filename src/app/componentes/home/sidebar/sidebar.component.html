@@ -1,0 +1,58 @@
+<div class="card" >
+  <p-menubar [model]="items2" />
+</div>
+
+
+<div class="card flex justify-content-center">
+  <p-sidebar [(visible)]="sidebarVisible" (mouseleave)="sidebarVisible = false">
+    <h2 [ngStyle]="{ color: 'var(--primary-color)' }">Pessoas</h2>
+
+    <div>
+      <ul>
+        <li style="cursor: pointer" [routerLink]="['/pessoas/listar']">
+          <h4>Listagem</h4>
+        </li>
+        <li style="cursor: pointer" [routerLink]="['/pessoas/formulario']">
+          <h4>Cadastro</h4>
+        </li>
+      </ul>
+    </div>
+    <h2 [ngStyle]="{ color: 'var(--primary-color)' }">Grupos</h2>
+
+    <div>
+      <ul>
+        <li style="cursor: pointer" [routerLink]="['/pessoas/listar']">
+          <h4>Listagem</h4>
+        </li>
+        <li style="cursor: pointer" [routerLink]="['/pessoas/formulario']">
+          <h4>Cadastro</h4>
+        </li>
+      </ul>
+    </div>
+
+    <!-- <div class="itemsSidebar">
+      <ul >
+        <li ><p-button [routerLink]="['/pessoas/listar']" label="Listagem"></p-button></li>
+        <li><p-button [routerLink]="['/pessoas/formulario']" label="Cadastro"></p-button></li>
+      </ul>
+    </div> -->
+
+  </p-sidebar>
+
+  <p-button
+    (mouseenter)="sidebarVisible = true"
+
+    icon="pi pi-bars"
+  ></p-button>
+</div>
+
+
+<div class="card">
+  <div>
+      <p-dock [model]="items" [position]="position">
+          <ng-template pTemplate="item" let-item>
+              <img [src]="item.icon" [alt]="item.label" width="80%" />
+          </ng-template>
+      </p-dock>
+  </div>
+</div>

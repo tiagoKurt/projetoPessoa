@@ -1,3 +1,5 @@
+<app-sidebar></app-sidebar>
+
 <div class="title-container">
   <h3 [ngStyle]="{ color: 'var(--primary-color)' }">Lista de pessoas</h3>
 </div>
@@ -5,6 +7,7 @@
 <div class="centered-container">
   <div class="card table-container">
     <p-toast />
+    <p-confirmDialog />
     <p-table [value]="pessoas" [tableStyle]="{ 'min-width': '40rem' }" [scrollable]="true" scrollHeight="380px">
       <ng-template pTemplate="header">
         <tr>
@@ -24,7 +27,7 @@
           <td>
 
             <p-button icon="pi pi-pencil" [rounded]="true" [routerLink]="['/editar',pessoa.id]"></p-button>
-            <p-button icon="pi pi-trash" [rounded]="true" (click)="excluirPessoa(pessoa.id)"></p-button>
+            <p-button icon="pi pi-trash" [rounded]="true" (click)="confirmacaoExclusao($event, pessoa.id)"></p-button>
           </td>
         </tr>
       </ng-template>
@@ -33,5 +36,6 @@
 </div>
 
 <div class="btn-container">
-  <p-button label="Cadastrar" [raised]="true" [routerLink]="['/formulario']"></p-button>
+  <p-button label="Voltar" severity="secondary" [raised]="true" [routerLink]="['/']"></p-button>
+  <p-button label="Cadastrar" [raised]="true" [routerLink]="['/pessoas/formulario']"></p-button>
 </div>

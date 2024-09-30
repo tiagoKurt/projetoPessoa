@@ -1,3 +1,9 @@
+<app-sidebar></app-sidebar>
+
+<div class="title-container">
+  <h3 [ngStyle]="{ color: 'var(--primary-color)' }">Cadastro de pessoas</h3>
+</div>
+
 <div class="centered-container">
   <div class="flex-column gap-2">
     <p-floatLabel>
@@ -31,13 +37,12 @@
       <p-button
         label="Voltar"
         [raised]="true"
-        severity="danger"
-        [routerLink]="['/']">
+        severity="secondary"
+        [routerLink]="['/pessoas/listar']">
       </p-button>
       <p-button
         label="Cadastrar"
         [raised]="true"
-        severity="success"
         (click)="cadastrar()">
       </p-button>
     </div>
