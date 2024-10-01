@@ -47,7 +47,7 @@ export class GruposListComponent {
   visible: boolean = false;
 
   pessoaSelecionada: IPessoa | null = null;
-  grupoSave: IGrupoSalvar = { id: null, nome: '', pessoaId: null };
+  grupoSave: IGrupoSalvar = { id: null, nome: '', descricao:'', pessoaId: null };
   pessoas: IPessoa[] = [];
 
   constructor(
@@ -75,12 +75,13 @@ export class GruposListComponent {
   editarGrupo(grupo: IGrupoShow): void {
     this.grupoSave.id = grupo.id;
     this.grupoSave.nome = grupo.nome;
+    this.grupoSave.descricao = grupo.descricao;
     this.grupoSave.pessoaId = grupo.pessoa ? grupo.pessoa.id : null; // Assume que o objeto 'pessoa' existe em 'grupo'
     this.visible = true;
   }
 
   cadastrarGrupo(): void {
-    if (!this.grupoSave.nome || !this.grupoSave.pessoaId) {
+    if (!this.grupoSave.nome || !this.grupoSave.pessoaId || !this.grupoSave.descricao) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Atenção!',
@@ -189,6 +190,7 @@ export class GruposListComponent {
   limparCampos() {
     this.grupoSave.id = null;
     this.grupoSave.nome = '';
+    this.grupoSave.descricao = '';
     this.pessoaSelecionada = null;
   }
 
