@@ -26,7 +26,7 @@
           <td>{{ pessoa.telefone }}</td>
           <td>
 
-            <p-button icon="pi pi-pencil" [rounded]="true" [routerLink]="['/editar',pessoa.id]"></p-button>
+            <p-button icon="pi pi-pencil" [rounded]="true" [routerLink]="['/pessoas/editar',pessoa.id]"></p-button>
             <p-button icon="pi pi-trash" [rounded]="true" (click)="confirmacaoExclusao($event, pessoa.id)"></p-button>
           </td>
         </tr>

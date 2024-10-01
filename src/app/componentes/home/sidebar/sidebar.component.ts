@@ -78,12 +78,7 @@ export class SidebarComponent implements OnInit{
               {
                   label: 'Listar',
                   icon: 'pi pi-list',
-                  routerLink: '/pessoas/listar'
-              },
-              {
-                  label: 'Cadastrar',
-                  icon: 'pi pi-plus-circle',
-                  routerLink: '/pessoas/formulario'
+                  routerLink: '/grupos/listar'
               }
             ]
         }

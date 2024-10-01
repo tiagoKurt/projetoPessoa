@@ -23,16 +23,14 @@ export class FormularioService {
 
   salvarPessoa(pessoa: IPessoa): Observable<IPessoa> {
     return this.getPessoas().pipe(
-      take(1), // Garante que só pegamos um valor e completamos o observable
+      take(1),
       switchMap((pessoas) => {
         const usuarioExistente = pessoas.find(p => p.nome.toLowerCase() === pessoa.nome.toLowerCase());
 
         if (usuarioExistente && usuarioExistente.id !== pessoa.id) {
-          // Se encontrar um usuário com o mesmo nome que não seja o mesmo
           return throwError({ message: 'Já existe um usuário com esse nome.' });
         }
 
-        // Se não existir, prossegue com a operação de salvar
         if (pessoa.id) {
           return this.http.put<IPessoa>(`${this.apiUrl}/${pessoa.id}`, pessoa);
         } else {
@@ -40,7 +38,6 @@ export class FormularioService {
         }
       }),
       catchError((error) => {
-        // Aqui você pode lidar com o erro, como exibir uma mensagem
         return throwError(error);
       })
     );

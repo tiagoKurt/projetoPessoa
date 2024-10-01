@@ -3,12 +3,15 @@ import { FormularioComponent } from './componentes/pessoas/formulario/formulario
 import { ListarComponent } from './componentes/pessoas/listar/listar.component';
 import { VisualizarComponent } from './componentes/pessoas/visualizar/visualizar.component';
 import { HomeComponent } from './componentes/home/home.component';
+import { GruposListComponent } from './componentes/grupos/grupos-list/grupos-list.component';
 
 
 export const routes: Routes = [
   { path: 'pessoas/formulario', component: FormularioComponent },
   { path: '', component: HomeComponent },
   { path: 'pessoas/listar', component: ListarComponent },
-  {path: 'editar/:id', component: VisualizarComponent}
+  {path: 'pessoas/editar/:id', component: VisualizarComponent},
+  {path: 'grupos/listar', component: GruposListComponent}
+
 
 ];

@@ -1,0 +1,97 @@
+<app-sidebar></app-sidebar>
+
+<div class="title-container">
+  <h3 [ngStyle]="{ color: 'var(--primary-color)' }">Lista de grupos</h3>
+</div>
+
+<div class="centered-container">
+  <div class="card table-container">
+    <p-toast />
+    <p-confirmDialog />
+    <p-table
+      [value]="grupos"
+      [tableStyle]="{ 'min-width': '40rem' }"
+      [scrollable]="true"
+      scrollHeight="380px"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nome do grupo</th>
+          <th>CPF Pessoa associada</th>
+          <th>Ações</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-grupo>
+        <tr>
+          <td>{{ grupo.nome }}</td>
+          <!-- <td>{{ grupo.pessoa.cpf }}</td> -->
+          <td>{{grupo.nome}}</td>
+          <td>
+            <p-button icon="pi pi-pencil" [rounded]="true" (click)="editarGrupo(grupo)"></p-button>
+            <p-button
+              icon="pi pi-trash"
+              [rounded]="true"
+              (click)="confirmacaoExclusao($event, grupo.id)"
+            ></p-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<div class="card flex justify-content-center">
+  <p-dialog
+    header="Cadastrar grupo"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '25rem', height: '25rem' }"
+    [draggable]="false"
+    [resizable]="false"
+  >
+    <div class="centered-container">
+      <div class="flex-column gap-2">
+
+        <p-floatLabel>
+          <input pInputText id="nome" [(ngModel)]="grupoSave.nome" />
+          <label for="nome">Nome</label>
+        </p-floatLabel>
+
+        <p-floatLabel>
+          <p-dropdown
+            [options]="pessoas"
+            [(ngModel)]="pessoaSelecionada"
+            optionLabel="cpf"
+            inputId="float-label"
+            [virtualScroll]="true"
+            [virtualScrollItemSize]="46"
+            [style]="{ width: '100%' }"
+            [scrollHeight]="'150px'"
+            (onChange)="onPessoaChange($event)"
+          />
+          <label for="float-label">Selecione uma pessoa</label>
+        </p-floatLabel>
+      </div>
+    </div>
+
+    <div class="botoesRightCard" style="margin-top: 90px">
+      <p-button
+        label="Voltar"
+        severity="secondary"
+        (onClick)="visible = false"
+        (click)="limparCampos()"
+      />
+      <p-button label="Salvar" (onClick)="cadastrarGrupo()" />
+    </div>
+  </p-dialog>
+</div>
+
+<div class="btn-container">
+  <p-button
+    label="Voltar"
+    severity="secondary"
+    [raised]="true"
+    [routerLink]="['/']"
+  ></p-button>
+  <p-button label="Cadastrar" [raised]="true" (click)="showDialog()"></p-button>
+</div>
