@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
-import { IGrupoSalvar, IGrupoShow } from '../types/grupo.types';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { catchError, Observable, switchMap, take, throwError } from 'rxjs';
+import { IGrupoSalvar, IGrupoShow } from '../types/grupo.types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GrupoService {
 
-  apiUrl = 'http://localhost:3000/grupos/'
+  apiUrl = 'http://localhost:8080/api/grupo'
 
 
   constructor(private http : HttpClient
@@ -19,6 +19,7 @@ export class GrupoService {
   }
 
   criarGrupo(pessoa: IGrupoSalvar): Observable<IGrupoSalvar> {
+    console.log(pessoa)
     return this.http.post<IGrupoSalvar>(this.apiUrl, pessoa);
   }
 
@@ -33,8 +34,8 @@ export class GrupoService {
         }
 
         if (grupo.id) {
-
-          return this.http.put<IGrupoSalvar>(`${this.apiUrl}/${grupo.id}`, grupo);
+          console.log(grupo.id)
+          return this.http.put<IGrupoSalvar>(this.apiUrl, grupo);
 
         } else {
           return this.criarGrupo(grupo);

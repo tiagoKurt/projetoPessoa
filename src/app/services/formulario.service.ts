@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
-import { IPessoa } from '../types/pessoa.types';
-import { catchError, Observable, switchMap, take, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { catchError, Observable, switchMap, take, throwError } from 'rxjs';
+import { IPessoa } from '../types/pessoa.types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormularioService {
 
-  apiUrl = 'http://localhost:3000/pessoas/'
+  apiUrl = 'http://localhost:8080/api/pessoa'
 
   private pessoas: IPessoa[] = [];
   constructor(private http : HttpClient) { }
@@ -32,7 +32,7 @@ export class FormularioService {
         }
 
         if (pessoa.id) {
-          return this.http.put<IPessoa>(`${this.apiUrl}/${pessoa.id}`, pessoa);
+          return this.http.put<IPessoa>(this.apiUrl, pessoa);
         } else {
           return this.criarPessoa(pessoa);
         }
