@@ -58,9 +58,42 @@
     <div class="centered-container">
       <div class="flex-column gap-2">
         <p-floatLabel>
-          <input pInputText id="tipo" [(ngModel)]="metaSave.tipo" />
-          <label for="tipo">Tipo</label>
+          <input pInputText id="meta" [(ngModel)]="metaSave.meta" />
+          <label for="meta">Meta</label>
         </p-floatLabel>
+        <p-floatLabel>
+          <input pInputText id="descricao" [(ngModel)]="metaSave.descricao" />
+          <label for="descricao">Descricao</label>
+        </p-floatLabel>
+        <p-dropdown
+        [options]="tipos"
+        [(ngModel)]="tipoSelecionado"
+        optionLabel="label" 
+        inputId="float-label"
+        [virtualScroll]="true"
+        [virtualScrollItemSize]="46"
+        [scrollHeight]="'150px'"
+        class="fixed-dropdown"
+        (onChange)="onTipoChange($event)"
+        [style]="{ width: '300px' }"
+        [showClear]="true"
+        placeholder="Selecione um tipo">
+      </p-dropdown>
+
+      <p-dropdown
+        [options]="categorias"
+        [(ngModel)]="categoriaSelecionada"
+        optionLabel="label"
+        inputId="float-label"
+        [virtualScroll]="true"
+        [virtualScrollItemSize]="46"
+        [scrollHeight]="'150px'"
+        class="fixed-dropdown"
+        (onChange)="onCategoriaChange($event)"
+        [style]="{ width: '300px' }"
+        [showClear]="true"
+        placeholder="Selecione uma categoria">
+      </p-dropdown>
 
         <p-floatLabel>
           <input pInputText id="valor" [(ngModel)]="metaSave.valor" />

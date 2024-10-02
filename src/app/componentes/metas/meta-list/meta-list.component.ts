@@ -1,26 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
-import { TableModule } from 'primeng/table';
-import { RouterModule } from '@angular/router';
-import { DialogModule } from 'primeng/dialog';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ToastModule } from 'primeng/toast';
+import { RouterModule } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { SidebarComponent } from '../../home/sidebar/sidebar.component';
-import { IGrupoShow } from '../../../types/grupo.types';
-import { GrupoService } from '../../../services/grupo.service';
-import { FloatLabelModule } from 'primeng/floatlabel';
+import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
-import { IPessoa } from '../../../types/pessoa.types';
-import { FormularioService } from '../../../services/formulario.service';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
-import { of, switchMap, take } from 'rxjs';
-import { IMetasSalvar, IMetasShow } from '../../../types/meta.types';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
+import { GrupoService } from '../../../services/grupo.service';
 import { MetaService } from '../../../services/meta.service';
+import { IGrupoShow } from '../../../types/grupo.types';
+import { DropDownMetas, IMetasSalvar, IMetasShow } from '../../../types/meta.types';
+import { SidebarComponent } from '../../home/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-meta-list',
@@ -48,9 +45,22 @@ import { MetaService } from '../../../services/meta.service';
 export class MetaListComponent {
   metas: IMetasShow[] = [];
   visible: boolean = false;
-
+  tipoSelecionado : DropDownMetas = {label : '', value : ''};
+  tipos: DropDownMetas[] = [
+    { label: 'Entrada', value: 'ENTRADA' },
+    { label: 'Saida', value: 'SAIDA' }
+  ];  
+  categorias: DropDownMetas[] = [
+    { label: 'Alimentação', value: 'ALIMENTACAO' },
+    { label: 'Educação', value: 'EDUCACAO' },
+    { label: 'Lazer', value: 'LAZER' },
+    { label: 'Saúde', value: 'SAUDE' },
+    { label: 'Transporte', value: 'TRANSPORTE' },
+  ]
+  
+  categoriaSelecionada : DropDownMetas = {label : '', value : ''}
   grupoSelecionado: IGrupoShow | null = null;
-  metaSave: IMetasSalvar = { id: null, tipo: '', valor:null, grupoId: null };
+  metaSave: IMetasSalvar = { id : null, tipo: '', meta: '', valor: 0, descricao: '', categoria: '', grupoId: null};
   grupos: IGrupoShow[] = [];
 
   constructor(
@@ -69,21 +79,33 @@ export class MetaListComponent {
       this.metas = data;
     });
   }
+  onTipoChange(event: any) {
+    if (this.metaSave.meta)
+    this.metaSave.tipo =this.tipoSelecionado.value
+  }
 
+  onCategoriaChange(event: any) {
+    if (this.metaSave.meta)
+    this.metaSave.categoria = this.categoriaSelecionada.value
+  }
   onGrupoChange(event: any) {
     this.metaSave.grupoId = event.value ? event.value.id : null;
     console.log(this.metaSave.grupoId);
   }
 
   editarMeta(meta: IMetasShow): void {
+    if (this.metaSave.meta)
+    {
     this.metaSave.id = meta.id;
     this.metaSave.tipo = meta.tipo;
     this.metaSave.valor = meta.valor;
     this.metaSave.grupoId = meta.grupo ? meta.grupo.id : null; // Assume que o objeto 'pessoa' existe em 'grupo'
     this.visible = true;
+    }
   }
 
   cadastrarMeta(): void {
+    
     if (!this.metaSave.tipo || !this.metaSave.valor || !this.metaSave.grupoId) {
       this.messageService.add({
         severity: 'warn',
@@ -92,7 +114,6 @@ export class MetaListComponent {
       });
       return;
     }
-
     this.metaService.salvarMeta(this.metaSave).subscribe(
       (resposta) => {
         this.messageService.add({
