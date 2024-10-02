@@ -10,7 +10,7 @@ export class GrupoService {
 
   apiUrl = 'http://localhost:3000/grupos/'
 
-  private pessoas: IGrupoSalvar[] = [];
+
   constructor(private http : HttpClient
   ) { }
 

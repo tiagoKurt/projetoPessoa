@@ -81,6 +81,17 @@ export class SidebarComponent implements OnInit{
                   routerLink: '/grupos/listar'
               }
             ]
+        },
+        {
+          label: 'Metas',
+          icon: 'pi pi-sitemap',
+          items: [
+            {
+                label: 'Listar',
+                icon: 'pi pi-list',
+                routerLink: '/metas/listar'
+            }
+          ]
         }
       ];
   }
