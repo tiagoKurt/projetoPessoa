@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
+import { GruposListComponent } from './componentes/grupos/grupos-list/grupos-list.component';
+import { HomeComponent } from './componentes/home/home.component';
 import { FormularioComponent } from './componentes/pessoas/formulario/formulario.component';
 import { ListarComponent } from './componentes/pessoas/listar/listar.component';
 import { VisualizarComponent } from './componentes/pessoas/visualizar/visualizar.component';
-import { HomeComponent } from './componentes/home/home.component';
-import { GruposListComponent } from './componentes/grupos/grupos-list/grupos-list.component';
 
 
 export const routes: Routes = [

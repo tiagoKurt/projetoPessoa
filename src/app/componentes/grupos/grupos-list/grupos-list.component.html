@@ -18,14 +18,15 @@
         <tr>
           <th>Nome do grupo</th>
           <th>CPF Pessoa associada</th>
+          <th>Saldo do grupo</th>
           <th>Ações</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-grupo>
         <tr>
           <td>{{ grupo.nome }}</td>
-          <!-- <td>{{ grupo.pessoa.cpf }}</td> -->
-          <td>{{grupo.nome}}</td>
+          <td>{{ grupo.pessoa.cpf }}</td>
+          <td>{{grupo.saldo}}</td>
           <td>
             <p-button icon="pi pi-pencil" [rounded]="true" (click)="editarGrupo(grupo)"></p-button>
             <p-button
@@ -56,6 +57,12 @@
           <input pInputText id="nome" [(ngModel)]="grupoSave.nome" />
           <label for="nome">Nome</label>
         </p-floatLabel>
+
+        <p-floatLabel>
+          <input pInputText id="descricao" [(ngModel)]="grupoSave.descricao" />
+          <label for="descricao">Descricao</label>
+        </p-floatLabel>
+
 
         <p-floatLabel>
           <p-dropdown

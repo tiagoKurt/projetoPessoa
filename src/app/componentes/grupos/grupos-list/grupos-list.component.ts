@@ -1,24 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
-import { TableModule } from 'primeng/table';
-import { RouterModule } from '@angular/router';
-import { DialogModule } from 'primeng/dialog';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ToastModule } from 'primeng/toast';
+import { RouterModule } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { SidebarComponent } from '../../home/sidebar/sidebar.component';
-import { IGrupoSalvar, IGrupoShow } from '../../../types/grupo.types';
-import { GrupoService } from '../../../services/grupo.service';
-import { FloatLabelModule } from 'primeng/floatlabel';
+import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
-import { IPessoa } from '../../../types/pessoa.types';
-import { FormularioService } from '../../../services/formulario.service';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
 import { of, switchMap, take } from 'rxjs';
+import { FormularioService } from '../../../services/formulario.service';
+import { GrupoService } from '../../../services/grupo.service';
+import { IGrupoSalvar, IGrupoShow } from '../../../types/grupo.types';
+import { IPessoa } from '../../../types/pessoa.types';
+import { SidebarComponent } from '../../home/sidebar/sidebar.component';
 @Component({
   selector: 'app-grupos-list',
   standalone: true,
@@ -47,7 +47,7 @@ export class GruposListComponent {
   visible: boolean = false;
 
   pessoaSelecionada: IPessoa | null = null;
-  grupoSave: IGrupoSalvar = { id: null, nome: '', pessoaId: null };
+  grupoSave: IGrupoSalvar = { id: null, nome: '', descricao : '',pessoaId: null };
   pessoas: IPessoa[] = [];
 
   constructor(
@@ -59,6 +59,7 @@ export class GruposListComponent {
 
   ngOnInit() {
     this.grupoService.getGrupos().subscribe((data: IGrupoShow[]) => {
+      console.log(data);
       this.grupos = data;
     });
 
@@ -75,7 +76,8 @@ export class GruposListComponent {
   editarGrupo(grupo: IGrupoShow): void {
     this.grupoSave.id = grupo.id;
     this.grupoSave.nome = grupo.nome;
-    this.grupoSave.pessoaId = grupo.pessoa ? grupo.pessoa.id : null; // Assume que o objeto 'pessoa' existe em 'grupo'
+    this.grupoSave.descricao = grupo.descricao;
+    this.pessoaSelecionada = grupo.pessoa; // Assume que o objeto 'pessoa' existe em 'grupo'
     this.visible = true;
   }
 
