@@ -82,7 +82,7 @@ export class GruposListComponent {
   }
 
   cadastrarGrupo(): void {
-    if (!this.grupoSave.nome || !this.grupoSave.pessoaId) {
+    if (!this.grupoSave.nome || !this.grupoSave.pessoaId || !this.grupoSave.descricao) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Atenção!',
@@ -191,6 +191,7 @@ export class GruposListComponent {
   limparCampos() {
     this.grupoSave.id = null;
     this.grupoSave.nome = '';
+    this.grupoSave.descricao = '';
     this.pessoaSelecionada = null;
   }
 
