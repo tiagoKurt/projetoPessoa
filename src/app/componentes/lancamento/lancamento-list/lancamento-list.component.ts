@@ -13,14 +13,16 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
-import { GrupoService } from '../../../services/grupo.service';
-import { MetaService } from '../../../services/meta.service';
-import { IGrupoShow } from '../../../types/grupo.types';
-import { DropDownStandard, IMetasSalvar, IMetasShow } from '../../../types/meta.types';
 import { SidebarComponent } from '../../home/sidebar/sidebar.component';
+import { ILancamentosSalvar, ILancamentosShow } from '../../../types/lancamento.types';
+import { IGrupoShow } from '../../../types/grupo.types';
+import { LancamentoService } from '../../../services/lancamento.service';
+import { GrupoService } from '../../../services/grupo.service';
+import { DropDownStandard } from '../../../types/meta.types';
+import { InputMaskModule } from 'primeng/inputmask';
 
 @Component({
-  selector: 'app-meta-list',
+  selector: 'app-lancamento-list',
   standalone: true,
   imports: [
     ButtonModule,
@@ -37,13 +39,14 @@ import { SidebarComponent } from '../../home/sidebar/sidebar.component';
     ConfirmDialogModule,
     FloatLabelModule,
     DropdownModule,
+    InputMaskModule
   ],
   providers: [MessageService, ConfirmationService],
-  templateUrl: './meta-list.component.html',
-  styleUrl: './meta-list.component.scss'
+  templateUrl: './lancamento-list.component.html',
+  styleUrl: './lancamento-list.component.scss'
 })
-export class MetaListComponent {
-  metas: IMetasShow[] = [];
+export class LancamentoListComponent {
+  lancamentos: ILancamentosShow[] = [];
   visible: boolean = false;
   tipoSelecionado : DropDownStandard = {label : '', value : ''};
   tipos: DropDownStandard[] = [
@@ -60,12 +63,12 @@ export class MetaListComponent {
 
   categoriaSelecionada : DropDownStandard = {label : '', value : ''}
   grupoSelecionado: IGrupoShow | null = null;
-  metaSave: IMetasSalvar = { id : null, tipo: '', meta: '', valor: null, descricao: '', categoria: '', grupoId: null};
+  lancamentoSave: ILancamentosSalvar = { id : null, nome: '', descricao: '', valor: null, data: '', tipo: '', categoria: '', grupoId: null};
   grupos: IGrupoShow[] = [];
 
   constructor(
     private grupoService: GrupoService,
-    private metaService: MetaService,
+    private lancamentoService: LancamentoService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
   ) {}
@@ -75,41 +78,41 @@ export class MetaListComponent {
       this.grupos = data;
     });
 
-    this.metaService.getMetas().subscribe((data: IMetasShow[]) => {
-      this.metas = data;
+    this.lancamentoService.getLancamentos().subscribe((data: ILancamentosShow[]) => {
+      this.lancamentos = data;
     });
   }
   onTipoChange(event: any) {
-    if (this.metaSave.meta)
-    this.metaSave.tipo =this.tipoSelecionado.value
+    this.lancamentoSave.tipo =this.tipoSelecionado.value
   }
 
   onCategoriaChange(event: any) {
-    if (this.metaSave.meta)
-    this.metaSave.categoria = this.categoriaSelecionada.value
+
+    this.lancamentoSave.categoria = this.categoriaSelecionada.value
   }
   onGrupoChange(event: any) {
-    this.metaSave.grupoId = event.value ? event.value.id : null;
-    console.log(this.metaSave.grupoId);
+    this.lancamentoSave.grupoId = event.value ? event.value.id : null;
+    console.log(this.lancamentoSave.grupoId);
   }
 
-  editarMeta(meta: IMetasShow): void {
-
-    this.metaSave.id = meta.id;
-    this.metaSave.meta = meta.meta;
-    this.metaSave.descricao = meta.descricao;
-    this.metaSave.tipo = meta.tipo;
-    this.metaSave.categoria = meta.categoria;
-    this.metaSave.valor = meta.valor;
-    this.metaSave.grupoId = meta.grupo.id;
+  editarLancamento(lancamento: ILancamentosShow): void {
+    if (this.lancamentoSave.nome)
+    {
+    this.lancamentoSave.id = lancamento.id;
+    this.lancamentoSave.nome = lancamento.nome;
+    this.lancamentoSave.descricao = lancamento.descricao;
+    this.lancamentoSave.id = lancamento.id;
+    this.lancamentoSave.tipo = lancamento.tipo;
+    this.lancamentoSave.valor = lancamento.valor;
+    this.lancamentoSave.grupoId = lancamento.grupo ? lancamento.grupo.id : null;
     this.visible = true;
-
+    }
   }
 
-  cadastrarMeta(): void {
-    this.metaSave.valor = this.metaSave.valor ? +this.metaSave.valor : null;
+  cadastrarLancamento(): void {
+    this.lancamentoSave.valor = this.lancamentoSave.valor ? +this.lancamentoSave.valor : null;
 
-    if (!this.metaSave.tipo || !this.metaSave.valor || !this.metaSave.grupoId || !this.metaSave.descricao || !this.metaSave.meta || !this.metaSave.categoria) {
+    if (!this.lancamentoSave.tipo || !this.lancamentoSave.valor || !this.lancamentoSave.grupoId || !this.lancamentoSave.descricao || !this.lancamentoSave.nome || !this.lancamentoSave.categoria) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Atenção!',
@@ -118,15 +121,15 @@ export class MetaListComponent {
       return;
     }
 
-    this.metaService.salvarMeta(this.metaSave).subscribe(
+    this.lancamentoService.salvarLancamento(this.lancamentoSave).subscribe(
       (resposta) => {
         this.messageService.add({
           severity: 'success',
           summary: 'Concluído!',
-          detail: 'Meta foi cadastrada com sucesso!',
+          detail: 'Lancamento foi cadastrada com sucesso!',
         });
         this.visible = false;
-        // console.log("JSON enviado:", JSON.stringify(this.metaSave));
+        // console.log("JSON enviado:", JSON.stringify(this.lancamentoSave));
         this.ngOnInit();
         this.limparCampos();
       },
@@ -134,20 +137,20 @@ export class MetaListComponent {
         this.messageService.add({
           severity: 'error',
           summary: 'Erro!',
-          detail: 'Falha ao cadastrar a meta.',
+          detail: 'Falha ao cadastrar lancamento.',
         });
       }
     );
   }
 
-  excluirMeta(id: number): void {
+  excluirLancamento(id: number): void {
     if (id) {
-      this.metaService.deletarMeta(id).subscribe(
+      this.lancamentoService.deletarLancamento(id).subscribe(
         () => {
           this.messageService.add({
             severity: 'success',
             summary: 'Concluído!',
-            detail: `Meta foi removida com sucesso!`,
+            detail: `Lancamento foi removida com sucesso!`,
           });
           this.ngOnInit();
         },
@@ -155,7 +158,7 @@ export class MetaListComponent {
           this.messageService.add({
             severity: 'error',
             summary: 'Erro!',
-            detail: 'Falha ao excluir a meta.',
+            detail: 'Falha ao excluir o lancamento.',
           });
         }
       );
@@ -165,7 +168,7 @@ export class MetaListComponent {
   confirmacaoExclusao(event: Event, id: number) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: 'Tem certeza que deseja excluir essa meta?',
+      message: 'Tem certeza que deseja excluir essa lancamento?',
       header: 'Confirmação de exclusão',
       icon: 'pi pi-info-circle',
       acceptLabel: 'Sim',
@@ -177,7 +180,7 @@ export class MetaListComponent {
 
       accept: () => {
         // this.messageService.add({ severity: 'success', summary: 'confirmar', detail: 'confirmar' });
-        this.excluirMeta(id);
+        this.excluirLancamento(id);
       },
       reject: () => {
         // this.messageService.add({ severity: 'error', summary: 'excluir', detail: 'excluir' });
@@ -190,13 +193,13 @@ export class MetaListComponent {
   }
 
   limparCampos() {
-    this.metaSave.id = null;
-    this.metaSave.tipo = '';
-    this.metaSave.meta = '';
-    this.metaSave.tipo = '';
-    this.metaSave.categoria = '';
-    this.metaSave.valor = null;
-    this.metaSave.descricao = '';
+    this.lancamentoSave.id = null;
+    this.lancamentoSave.tipo = '';
+    this.lancamentoSave.nome = '';
+    this.lancamentoSave.categoria = '';
+    this.lancamentoSave.valor = null;
+    this.lancamentoSave.descricao = '';
+    this.lancamentoSave.data = '';
     this.grupoSelecionado = null;
   }
 }

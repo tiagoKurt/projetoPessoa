@@ -77,7 +77,7 @@ export class GruposListComponent {
     this.grupoSave.id = grupo.id;
     this.grupoSave.nome = grupo.nome;
     this.grupoSave.descricao = grupo.descricao;
-    this.pessoaSelecionada = grupo.pessoa; // Assume que o objeto 'pessoa' existe em 'grupo'
+    this.pessoaSelecionada = grupo.pessoa;
     this.visible = true;
   }
 

@@ -84,12 +84,23 @@ export class SidebarComponent implements OnInit{
         },
         {
           label: 'Metas',
-          icon: 'pi pi-sitemap',
+          icon: 'pi pi-lock',
           items: [
             {
                 label: 'Listar',
                 icon: 'pi pi-list',
                 routerLink: '/metas/listar'
+            }
+          ]
+        },
+        {
+          label: 'Lancamentos',
+          icon: 'pi pi-money-bill',
+          items: [
+            {
+                label: 'Listar',
+                icon: 'pi pi-list',
+                routerLink: '/lancamentos/listar'
             }
           ]
         }

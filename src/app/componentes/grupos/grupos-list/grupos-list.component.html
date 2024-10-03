@@ -26,8 +26,9 @@
       <ng-template pTemplate="body" let-grupo>
         <tr>
           <td>{{ grupo.nome }}</td>
+          <td>{{ grupo.descricao }}</td>
           <td>{{ grupo.pessoa.cpf }}</td>
-          <td>{{grupo.saldo}}</td>
+          <td>{{ grupo.saldo}}</td>
           <td>
             <p-button icon="pi pi-pencil" [rounded]="true" (click)="editarGrupo(grupo)"></p-button>
             <p-button

@@ -11,12 +11,15 @@ export interface IMetasSalvar{
 
 export interface IMetasShow{
   id: number | null;
+  meta: string;
   tipo: string;
   valor: number;
+  categoria: string
+  descricao: string
   grupo: IGrupoShow
 }
 
-export type DropDownMetas = {
+export type DropDownStandard = {
   label: string;
   value: string;
 }

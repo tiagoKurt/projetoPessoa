@@ -1,0 +1,69 @@
+.centered-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+  flex-direction: column;
+}
+
+.table-container {
+  padding: 1rem;
+  width: 80%;
+  max-width: 1000px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.title-container {
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.btn-container {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+
+}
+
+
+
+p-table {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+p-button{
+  margin-right: 15px;
+}
+
+.gap-2 > * + * {
+  margin-top: 1.5rem;
+}
+
+::ng-deep p-floatLabel input {
+  padding: 0.5rem;
+  width:300px;
+}
+
+::ng-deep p-floatLabel {
+  padding: 0.5rem;
+  margin-top: 10px;
+}
+
+.fixed-dropdown .p-dropdown-label {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

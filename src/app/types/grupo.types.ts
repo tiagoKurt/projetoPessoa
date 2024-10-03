@@ -12,5 +12,5 @@ export interface IGrupoShow{
   nome: string;
   descricao: string
   pessoa: IPessoa
-  saldo: number 
+  saldo: number
 }

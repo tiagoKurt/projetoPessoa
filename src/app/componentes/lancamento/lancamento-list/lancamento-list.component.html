@@ -9,34 +9,39 @@
     <p-toast />
     <p-confirmDialog />
     <p-table
-      [value]="metas"
+      [value]="lancamentos"
       [tableStyle]="{ 'min-width': '40rem' }"
       [scrollable]="true"
       scrollHeight="380px"
     >
       <ng-template pTemplate="header">
         <tr>
+          <th>Nome</th>
+          <th>Descrição</th>
           <th>Tipo</th>
-          <th>Valor</th>
-          <th>Nome grupo associado</th>
+          <th>Grupo</th>
+          <th>Data</th>
           <th>Ações</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-meta>
+      <ng-template pTemplate="body" let-lancamento>
         <tr>
-          <td>{{ meta.tipo }}</td>
-          <td>{{ meta.valor }}</td>
-          <td>{{ meta.grupo.nome }}</td>
+          <td>{{ lancamento.nome }}</td>
+          <td>{{ lancamento.descricao }}</td>
+          <td>{{ lancamento.tipo }}</td>
+          <td>{{ lancamento.grupo.nome }}</td>
+          <td>{{ lancamento.data }}</td>
+
           <td>
             <p-button
               icon="pi pi-pencil"
               [rounded]="true"
-              (click)="editarMeta(meta)"
+              (click)="editarLancamento(lancamento)"
             ></p-button>
             <p-button
               icon="pi pi-trash"
               [rounded]="true"
-              (click)="confirmacaoExclusao($event, meta.id)"
+              (click)="confirmacaoExclusao($event, lancamento.id)"
             ></p-button>
           </td>
         </tr>
@@ -59,13 +64,28 @@
       <div class="flex-column gap-2">
 
         <p-floatLabel>
-          <input pInputText id="meta" [(ngModel)]="metaSave.meta" />
-          <label for="meta">Meta</label>
+          <input pInputText id="nome" [(ngModel)]="lancamentoSave.nome" />
+          <label for="nome">Nome</label>
         </p-floatLabel>
 
         <p-floatLabel>
-          <input pInputText id="descricao" [(ngModel)]="metaSave.descricao" />
+          <input pInputText id="descricao" [(ngModel)]="lancamentoSave.descricao" />
           <label for="descricao">Descricao</label>
+        </p-floatLabel>
+
+        <p-floatLabel>
+          <input pInputText id="valor" type="number" [(ngModel)]="lancamentoSave.valor" />
+          <label for="valor">Valor</label>
+        </p-floatLabel>
+
+        <p-floatLabel>
+          <p-inputMask
+            mask="99/99/9999"
+            [(ngModel)]="lancamentoSave.data"
+            id="data_input"
+            placeholder="DD/MM/YYYY"/>
+
+          <label for="data_input">Data</label>
         </p-floatLabel>
 
         <p-dropdown
@@ -98,11 +118,6 @@
         placeholder="Selecione uma categoria">
       </p-dropdown>
 
-      <p-floatLabel>
-        <input pInputText id="valor" type="number" [(ngModel)]="metaSave.valor" />
-        <label for="valor">Valor</label>
-      </p-floatLabel>
-
 
           <p-dropdown
             [options]="grupos"
@@ -126,7 +141,7 @@
               (onClick)="visible = false"
               (click)="limparCampos()"
             />
-            <p-button label="Salvar" (onClick)="cadastrarMeta()" />
+            <p-button label="Salvar" (onClick)="cadastrarLancamento()" />
           </div>
       </div>
     </div>

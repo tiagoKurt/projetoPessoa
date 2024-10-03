@@ -5,6 +5,7 @@ import { FormularioComponent } from './componentes/pessoas/formulario/formulario
 import { ListarComponent } from './componentes/pessoas/listar/listar.component';
 import { VisualizarComponent } from './componentes/pessoas/visualizar/visualizar.component';
 import { MetaListComponent } from './componentes/metas/meta-list/meta-list.component';
+import { LancamentoListComponent } from './componentes/lancamento/lancamento-list/lancamento-list.component';
 
 
 
@@ -14,7 +15,8 @@ export const routes: Routes = [
   { path: 'pessoas/listar', component: ListarComponent },
   {path: 'pessoas/editar/:id', component: VisualizarComponent},
   {path: 'grupos/listar', component: GruposListComponent},
-  {path: 'metas/listar', component: MetaListComponent}
+  {path: 'metas/listar', component: MetaListComponent},
+  {path: 'lancamentos/listar', component: LancamentoListComponent}
 
 
 ];
