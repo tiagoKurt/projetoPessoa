@@ -35,7 +35,7 @@ export class LancamentoService {
   }
 
   deletarLancamento(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
 

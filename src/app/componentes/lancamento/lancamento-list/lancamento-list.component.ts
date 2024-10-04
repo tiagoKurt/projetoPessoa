@@ -46,6 +46,10 @@ import { InputMaskModule } from 'primeng/inputmask';
   styleUrl: './lancamento-list.component.scss'
 })
 export class LancamentoListComponent {
+
+  periodoInicio : string = ''
+  periodoFim: string = ''
+
   lancamentos: ILancamentosShow[] = [];
   visible: boolean = false;
   tipoSelecionado : DropDownStandard = {label : '', value : ''};
@@ -129,7 +133,7 @@ export class LancamentoListComponent {
           detail: 'Lancamento foi cadastrada com sucesso!',
         });
         this.visible = false;
-        // console.log("JSON enviado:", JSON.stringify(this.lancamentoSave));
+        console.log("JSON enviado:", JSON.stringify(this.lancamentoSave));
         this.ngOnInit();
         this.limparCampos();
       },
@@ -202,4 +206,14 @@ export class LancamentoListComponent {
     this.lancamentoSave.data = '';
     this.grupoSelecionado = null;
   }
+
+  gerarRelatorioMensal() {
+
+  }
+
+  gerarRelatorioPorGrupo(){}
+
+
+  gerarRelatorioPorCategoria(){}
+
 }

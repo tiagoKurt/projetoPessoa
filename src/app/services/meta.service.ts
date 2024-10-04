@@ -18,7 +18,7 @@ export class MetaService {
   }
 
   criarMeta(Meta: IMetasSalvar): Observable<IMetasSalvar> {
-    
+
     console.log(Meta)
 
     return this.http.post<IMetasSalvar>(this.apiUrl, Meta);
@@ -26,7 +26,7 @@ export class MetaService {
 
   salvarMeta(meta: IMetasSalvar): Observable<IMetasSalvar> {
     if (meta.id) {
-     
+
       return this.http.put<IMetasSalvar>(this.apiUrl, meta);
     } else {
       return this.criarMeta(meta);
@@ -34,6 +34,6 @@ export class MetaService {
   }
 
   deletarMeta(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
