@@ -55,6 +55,9 @@ export class LancamentoListComponent {
   lancamentos: ILancamentosShow[] = [];
   visible: boolean = false;
   visibleData: boolean = false;
+  visibleGroup: boolean = false;
+  visibleCategoria:  boolean = false;
+
   tipoSelecionado : DropDownStandard = {label : '', value : ''};
   tipos: DropDownStandard[] = [
     { label: 'Entrada', value: 'ENTRADA' },
@@ -131,7 +134,8 @@ export class LancamentoListComponent {
       });
       return;
     }
-
+    const [dia,mes,ano] = this.lancamentoSave.data.split('/')
+    this.lancamentoSave.data = `${ano}-${mes}-${dia}`
     this.lancamentoService.salvarLancamento(this.lancamentoSave).subscribe(
       (resposta) => {
         this.messageService.add({
@@ -205,6 +209,12 @@ export class LancamentoListComponent {
   showDataDialog(){
     this.visibleData = true;
   }
+  showGroupDialog(){
+    this.visibleGroup = true;
+  }
+  showCategoriaDialog(){
+    this.visibleCategoria = true;
+  }
 
   limparCampos() {
     this.lancamentoSave.id = null;
@@ -219,7 +229,6 @@ export class LancamentoListComponent {
 
   
   gerarRelatorioMensal() {
-    console.log(this.dataFiltro)
     this.lancamentoService.getRelatorio('mensal' , `?data=${this.dataFiltro}&grupo=${this.grupoRelatorio?.id}`).subscribe((data: Lancamento[]) => {
         this.relatorios =  data;
         const doc = new jsPDF();
@@ -229,57 +238,200 @@ export class LancamentoListComponent {
         doc.text(`RELATÓRIO MENSAL DE LANÇAMENTOS DO ${this.relatorios[0].grupo?.nome}`, 10, 10);
       
         // Definindo as colunas
-        const colunas = ['Data', 'Categoria', 'Descrição', 'Valor', 'Tipo', 'Saldo Total do Grupo'];
-        const inicioX = 10;
-        const inicioY = 30;
-        let posicaoY = inicioY;
-      
-        // Largura de cada coluna (ajuste conforme necessário)
-        const larguraColunas = [30, 30, 50, 25, 25, 40];
-      
-        // Cabeçalho da tabela
-        doc.setFontSize(12);
-        colunas.forEach((coluna, index) => {
-          doc.text(coluna, inicioX + larguraColunas.slice(0, index).reduce((a, b) => a + b, 0), posicaoY);
-        });
-      
-        // Desenha a linha abaixo do cabeçalho
-        posicaoY += 5;
-        doc.line(inicioX, posicaoY, 200, posicaoY);
-      
-        // Dados da tabela
-        this.relatorios.forEach(lancamento => {
-          posicaoY += 10; // Mover para a próxima linha
-      
-          // Preenchendo cada coluna com os dados de um lançamento
-          doc.text(lancamento.data, inicioX, posicaoY);
-          doc.text(lancamento.categoria, inicioX + larguraColunas[0], posicaoY);
-          doc.text(lancamento.descricao, inicioX + larguraColunas[0] + larguraColunas[1], posicaoY);
-          doc.text(lancamento.valor.toFixed(2), inicioX + larguraColunas[0] + larguraColunas[1] + larguraColunas[2], posicaoY);
-          doc.text(lancamento.tipo, inicioX + larguraColunas[0] + larguraColunas[1] + larguraColunas[2] + larguraColunas[3], posicaoY);
-          if(lancamento.grupo)
-          doc.text(lancamento.grupo.saldo.toFixed(2), inicioX + larguraColunas[0] + larguraColunas[1] + larguraColunas[2] + larguraColunas[3] + larguraColunas[4], posicaoY);
-        });
-      
-        // Adicionar rodapé
-        const pageHeight = doc.internal.pageSize.height;
-        doc.text(`Gerado em: ${new Date().toLocaleDateString()}`, 10, pageHeight - 10);
-      
-        // Salvar o PDF
-        doc.save(`relatorio_${this.relatorios[0].grupo?.descricao}.pdf`);
-      }
-    )
+        // Definindo posição inicial
+const inicioX = 10;
+const inicioY = 30;
+let posicaoY = inicioY;
 
-    
+// Percorrendo cada lançamento
+this.relatorios.forEach(lancamento => {
+  posicaoY += 10; // Mover para a próxima linha
+
+  // Formatação da data
+  const [ano, mes, dia] = lancamento.data.split('-');
+  const dataFormatada = `${dia}/${mes}/${ano}`;
+
+  // Preenchendo cada campo em uma nova linha
+  doc.setFontSize(12);
+  doc.text(`Data: ${dataFormatada}`, inicioX, posicaoY);
+  
+  posicaoY += 7;
+  doc.text(`Categoria: ${lancamento.categoria}`, inicioX, posicaoY);
+  
+  posicaoY += 7;
+  doc.text(`Descrição: ${lancamento.descricao}`, inicioX, posicaoY);
+  
+  posicaoY += 7;
+  doc.text(`Valor: ${lancamento.valor.toFixed(2)}`, inicioX, posicaoY);
+  
+  posicaoY += 7;
+  doc.text(`Tipo: ${lancamento.tipo}`, inicioX, posicaoY);
+  
+  if (lancamento.grupo) {
+    posicaoY += 7;
+    doc.text(`Saldo Total do Grupo: ${lancamento.grupo.saldo.toFixed(2)}`, inicioX, posicaoY);
+  }
+
+  // Adiciona um espaçamento entre os registros
+  posicaoY += 10;
+  
+  // Verificar se precisa adicionar uma nova página
+  if (posicaoY > doc.internal.pageSize.height - 20) {
+    doc.addPage();
+    posicaoY = 10; // Reiniciar a posição Y na nova página
+  }
+});
+
+// Adicionar rodapé
+const pageHeight = doc.internal.pageSize.height;
+doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric'
+})}`, 10, pageHeight - 10);
+// Salvar o PDF
+doc.save(`relatorio_${this.relatorios[0].grupo?.descricao}.pdf`);
+
+
+      });
   }
 
   gerarRelatorioPorGrupo(){
+      this.lancamentoService.getRelatorio('grupo' , `?grupo=${this.grupoRelatorio?.id}`).subscribe((data: Lancamento[]) => {
+        this.relatorios =  data;
+        const doc = new jsPDF();
 
+// Título do relatório
+doc.setFontSize(14);
+doc.text(`RELATÓRIO DE LANÇAMENTOS DO ${this.relatorios[0].grupo?.nome}`, 10, 10);
+
+// Definindo posição inicial
+const inicioX = 10;
+const inicioY = 30;
+let posicaoY = inicioY;
+
+// Percorrendo cada lançamento
+this.relatorios.forEach(lancamento => {
+  posicaoY += 10; // Mover para a próxima linha
+
+  // Formatação da data
+  const [ano, mes, dia] = lancamento.data.split('-');
+  const dataFormatada = `${dia}/${mes}/${ano}`;
+
+  // Preenchendo cada campo em uma nova linha
+  doc.setFontSize(12);
+  doc.text(`Data: ${dataFormatada}`, inicioX, posicaoY);
+  
+  posicaoY += 7;
+  doc.text(`Categoria: ${lancamento.categoria}`, inicioX, posicaoY);
+  
+  posicaoY += 7;
+  doc.text(`Descrição: ${lancamento.descricao}`, inicioX, posicaoY);
+  
+  posicaoY += 7;
+  doc.text(`Valor: ${lancamento.valor.toFixed(2)}`, inicioX, posicaoY);
+  
+  posicaoY += 7;
+  doc.text(`Tipo: ${lancamento.tipo}`, inicioX, posicaoY);
+  
+  if (lancamento.grupo) {
+    posicaoY += 7;
+    doc.text(`Saldo Total do Grupo: ${lancamento.grupo.saldo.toFixed(2)}`, inicioX, posicaoY);
+  }
+
+  // Adiciona um espaçamento entre os registros
+  posicaoY += 10;
+  
+  // Verificar se precisa adicionar uma nova página
+  if (posicaoY > doc.internal.pageSize.height - 20) {
+    doc.addPage();
+    posicaoY = 10; // Reiniciar a posição Y na nova página
+  }
+});
+
+// Adicionar rodapé
+const pageHeight = doc.internal.pageSize.height;
+doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric'
+})}`, 10, pageHeight - 10);
+
+// Salvar o PDF
+doc.save(`relatorio_${this.relatorios[0].grupo?.descricao}.pdf`);
+      }
+    )
   }
 
 
   gerarRelatorioPorCategoria(){
+    console.log("LABEL "  , this.categoriaSelecionada.label)
+    console.log("VALUE "  , this.categoriaSelecionada.value)
     
+    this.lancamentoService.getRelatorio('categoria' , `?grupo=${this.grupoRelatorio?.id}&categoria=${this.categoriaSelecionada.value}`).subscribe((data: Lancamento[]) => {
+      this.relatorios =  data;
+      const doc = new jsPDF();
+
+// Título do relatório
+doc.setFontSize(14);
+doc.text(`RELATÓRIO DE LANÇAMENTOS POR CATEGORIA DO ${this.relatorios[0].grupo?.nome}`, 10, 10);
+
+// Definindo posição inicial
+const inicioX = 10;
+const inicioY = 30;
+let posicaoY = inicioY;
+
+// Percorrendo cada lançamento
+this.relatorios.forEach(lancamento => {
+posicaoY += 10; // Mover para a próxima linha
+
+// Formatação da data
+const [ano, mes, dia] = lancamento.data.split('-');
+const dataFormatada = `${dia}/${mes}/${ano}`;
+
+// Preenchendo cada campo em uma nova linha
+doc.setFontSize(12);
+doc.text(`Data: ${dataFormatada}`, inicioX, posicaoY);
+
+posicaoY += 7;
+doc.text(`Categoria: ${lancamento.categoria}`, inicioX, posicaoY);
+
+posicaoY += 7;
+doc.text(`Descrição: ${lancamento.descricao}`, inicioX, posicaoY);
+
+posicaoY += 7;
+doc.text(`Valor: ${lancamento.valor.toFixed(2)}`, inicioX, posicaoY);
+
+posicaoY += 7;
+doc.text(`Tipo: ${lancamento.tipo}`, inicioX, posicaoY);
+
+if (lancamento.grupo) {
+  posicaoY += 7;
+  doc.text(`Saldo Total do Grupo: ${lancamento.grupo.saldo.toFixed(2)}`, inicioX, posicaoY);
+}
+
+// Adiciona um espaçamento entre os registros
+posicaoY += 10;
+
+// Verificar se precisa adicionar uma nova página
+if (posicaoY > doc.internal.pageSize.height - 20) {
+  doc.addPage();
+  posicaoY = 10; // Reiniciar a posição Y na nova página
+}
+});
+
+// Adicionar rodapé
+const pageHeight = doc.internal.pageSize.height;
+doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR', {
+day: '2-digit',
+month: '2-digit',
+year: 'numeric'
+})}`, 10, pageHeight - 10);
+
+// Salvar o PDF
+doc.save(`relatorio_${this.relatorios[0].grupo?.descricao}.pdf`);
+    }
+  )
   }
 
 }
