@@ -1,4 +1,3 @@
-import { Data } from "@angular/router";
 import { IGrupoShow } from "./grupo.types";
 
 export interface ILancamentosSalvar{
@@ -22,3 +21,32 @@ export interface ILancamentosShow{
   valor: number | null;
   grupo: IGrupoShow
 }
+
+type Pessoa = {
+  id: number;
+  nome: string;
+  email: string;
+  cpf: string;
+  telefone: string;
+};
+
+type Grupo = {
+  id: number;
+  nome: string;
+  descricao: string;
+  saldo: number;
+  pessoa: Pessoa;
+};
+
+export type Lancamento = {
+  id: number;
+  nome: string;
+  descricao: string;
+  valor: number;
+  data: string;
+  tipo: 'ENTRADA' | 'SAIDA';
+  categoria: string;
+  grupo: Grupo | null;
+  grupoId: number | null;
+};
+

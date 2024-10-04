@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ILancamentosSalvar, ILancamentosShow } from '../types/lancamento.types';
+import { ILancamentosSalvar, ILancamentosShow, Lancamento } from '../types/lancamento.types';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +36,10 @@ export class LancamentoService {
 
   deletarLancamento(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+  getRelatorio( tipoRelatorio: string , pesquisa : string): Observable<Lancamento[]> {
+    console.log(`${this.apiUrl}/relatorio/${tipoRelatorio}${pesquisa}`)
+    return this.http.get<Lancamento[]>(`${this.apiUrl}/relatorio/${tipoRelatorio}${pesquisa}`);
   }
 }
 

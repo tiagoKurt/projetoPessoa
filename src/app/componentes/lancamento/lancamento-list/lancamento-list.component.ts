@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -9,17 +11,17 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
-import { SidebarComponent } from '../../home/sidebar/sidebar.component';
-import { ILancamentosSalvar, ILancamentosShow } from '../../../types/lancamento.types';
-import { IGrupoShow } from '../../../types/grupo.types';
-import { LancamentoService } from '../../../services/lancamento.service';
 import { GrupoService } from '../../../services/grupo.service';
+import { LancamentoService } from '../../../services/lancamento.service';
+import { IGrupoShow } from '../../../types/grupo.types';
+import { ILancamentosSalvar, ILancamentosShow, Lancamento } from '../../../types/lancamento.types';
 import { DropDownStandard } from '../../../types/meta.types';
-import { InputMaskModule } from 'primeng/inputmask';
+import { SidebarComponent } from '../../home/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-lancamento-list',
@@ -52,6 +54,7 @@ export class LancamentoListComponent {
 
   lancamentos: ILancamentosShow[] = [];
   visible: boolean = false;
+  visibleData: boolean = false;
   tipoSelecionado : DropDownStandard = {label : '', value : ''};
   tipos: DropDownStandard[] = [
     { label: 'Entrada', value: 'ENTRADA' },
@@ -67,8 +70,12 @@ export class LancamentoListComponent {
 
   categoriaSelecionada : DropDownStandard = {label : '', value : ''}
   grupoSelecionado: IGrupoShow | null = null;
+  grupoRelatorio: IGrupoShow | null = null;
+  
   lancamentoSave: ILancamentosSalvar = { id : null, nome: '', descricao: '', valor: null, data: '', tipo: '', categoria: '', grupoId: null};
   grupos: IGrupoShow[] = [];
+  dataFiltro = ''
+  relatorios : Lancamento[] = []
 
   constructor(
     private grupoService: GrupoService,
@@ -195,6 +202,9 @@ export class LancamentoListComponent {
   showDialog() {
     this.visible = true;
   }
+  showDataDialog(){
+    this.visibleData = true;
+  }
 
   limparCampos() {
     this.lancamentoSave.id = null;
@@ -207,13 +217,69 @@ export class LancamentoListComponent {
     this.grupoSelecionado = null;
   }
 
+  
   gerarRelatorioMensal() {
+    console.log(this.dataFiltro)
+    this.lancamentoService.getRelatorio('mensal' , `?data=${this.dataFiltro}&grupo=${this.grupoRelatorio?.id}`).subscribe((data: Lancamento[]) => {
+        this.relatorios =  data;
+        const doc = new jsPDF();
+
+        // Título do relatório
+        doc.setFontSize(14);
+        doc.text(`RELATÓRIO MENSAL DE LANÇAMENTOS DO ${this.relatorios[0].grupo?.nome}`, 10, 10);
+      
+        // Definindo as colunas
+        const colunas = ['Data', 'Categoria', 'Descrição', 'Valor', 'Tipo', 'Saldo Total do Grupo'];
+        const inicioX = 10;
+        const inicioY = 30;
+        let posicaoY = inicioY;
+      
+        // Largura de cada coluna (ajuste conforme necessário)
+        const larguraColunas = [30, 30, 50, 25, 25, 40];
+      
+        // Cabeçalho da tabela
+        doc.setFontSize(12);
+        colunas.forEach((coluna, index) => {
+          doc.text(coluna, inicioX + larguraColunas.slice(0, index).reduce((a, b) => a + b, 0), posicaoY);
+        });
+      
+        // Desenha a linha abaixo do cabeçalho
+        posicaoY += 5;
+        doc.line(inicioX, posicaoY, 200, posicaoY);
+      
+        // Dados da tabela
+        this.relatorios.forEach(lancamento => {
+          posicaoY += 10; // Mover para a próxima linha
+      
+          // Preenchendo cada coluna com os dados de um lançamento
+          doc.text(lancamento.data, inicioX, posicaoY);
+          doc.text(lancamento.categoria, inicioX + larguraColunas[0], posicaoY);
+          doc.text(lancamento.descricao, inicioX + larguraColunas[0] + larguraColunas[1], posicaoY);
+          doc.text(lancamento.valor.toFixed(2), inicioX + larguraColunas[0] + larguraColunas[1] + larguraColunas[2], posicaoY);
+          doc.text(lancamento.tipo, inicioX + larguraColunas[0] + larguraColunas[1] + larguraColunas[2] + larguraColunas[3], posicaoY);
+          if(lancamento.grupo)
+          doc.text(lancamento.grupo.saldo.toFixed(2), inicioX + larguraColunas[0] + larguraColunas[1] + larguraColunas[2] + larguraColunas[3] + larguraColunas[4], posicaoY);
+        });
+      
+        // Adicionar rodapé
+        const pageHeight = doc.internal.pageSize.height;
+        doc.text(`Gerado em: ${new Date().toLocaleDateString()}`, 10, pageHeight - 10);
+      
+        // Salvar o PDF
+        doc.save(`relatorio_${this.relatorios[0].grupo?.descricao}.pdf`);
+      }
+    )
+
+    
+  }
+
+  gerarRelatorioPorGrupo(){
 
   }
 
-  gerarRelatorioPorGrupo(){}
 
-
-  gerarRelatorioPorCategoria(){}
+  gerarRelatorioPorCategoria(){
+    
+  }
 
 }
